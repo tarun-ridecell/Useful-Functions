@@ -1,0 +1,13 @@
+uli bin_to_dec(uli n)
+{
+    uli res = 0;
+    li i;
+
+    for(i = 0; n > 0; ++i)
+    {
+        if((n % 10) == 1)
+            res += (1 << i);
+        n /= 10;
+    }
+    return res;
+}
