@@ -1,0 +1,14 @@
+li dec_to_bin(li n) 
+{ 
+    uli res = 0; 
+    int cnt = 0; 
+    while (n != 0) 
+    { 
+        int rem = n % 2; 
+        uli c = pow(10 , cnt); 
+        res += rem * c; 
+        n /= 2; 
+        cnt++; 
+    } 
+    return res; 
+}
