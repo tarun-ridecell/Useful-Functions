@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long li;
+typedef long double ld;
+#define pb push_back
+#define mp make_pair
+#define pi pair<li, li>
+#define ppi pair<li, pi>
+#define vi vector<li>
+#define f first
+#define s second
+#define co() cout.precision(10);
+#define F for (li i = 0; i < n; i++)
+#define ln cout << endl;
+#define cn continue;
+#define ret return 0;
+#define all(v) v.begin(), v.end()
+#define allr(v) v.rbegin(), v.rend()
+#define MAXN 100005
+#define CLOCK cerr << "\nTime elapsed: " << 1000 * clock() / CLOCKS_PER_SEC << "ms\n";
+//memset(arr, 0, sizeof arr);
+const li mod = 1000000007;
+li tree[4 * MAXN];
+void update(li node, li s, li e, li inx)
+{
+    if (s == e)
+    {
+        tree[node] = 1;
+    }
+    else
+    {
+        li m = (s + e) >> 1;
+        if (inx <= m)
+            update(2 * node, s, m, inx);
+        else
+            update(2 * node + 1, m + 1, e, inx);
+        tree[node] = tree[2 * node] + tree[2 * node + 1];
+    }
+}
+li query(li node, li s, li e, li l, li r)
+{
+    if (l > r || s > r || e < l)
+        return 0;
+    if (s >= l && e <= r)
+        return tree[node];
+    li m = (s + e) >> 1;
+    li q1 = query(2 * node, s, m, l, r);
+    li q2 = query(2 * node + 1, m + 1, e, l, r);
+    return q1 + q2;
+}
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t = 1;
+    // cin >> t;
+    while (t--)
+    {
+        li n, i;
+        cin >> n;
+        li a[n + 1];
+        for (i = 1; i <= n; i++)
+        {
+            cin >> a[i];
+            cout << query(1, 1, n, a[i] + 1, n) << ' ';
+            update(1, 1, n, a[i]);
+        }
+    }
+}
