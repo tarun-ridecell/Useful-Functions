@@ -1,0 +1,105 @@
+// codeforces https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/E
+
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long li;
+typedef long double ld;
+#define pb push_back
+#define mp make_pair
+#define pi pair<li, li>
+#define ppi pair<li, pi>
+#define vi vector<li>
+#define f first
+#define s second
+#define co() cout.precision(10);
+#define F for (li i = 0; i < n; i++)
+#define ln cout << endl;
+#define cn continue;
+#define ret return 0;
+#define all(v) v.begin(), v.end()
+#define allr(v) v.rbegin(), v.rend()
+#define MAXN 100005
+#define CLOCK cerr << "\nTime elapsed: " << 1000 * clock() / CLOCKS_PER_SEC << "ms\n";
+//memset(arr, 0, sizeof arr);
+const li mod = 1000000007;
+struct Node
+{
+    li val, lazy;
+} tree[4 * MAXN];
+void update(li node, li s, li e, li l, li r, li x)
+{
+    if (tree[node].lazy != 0)
+    {
+        tree[node].val += tree[node].lazy;
+        if (s != e)
+        {
+            tree[2 * node].lazy += tree[node].lazy;
+            tree[2 * node + 1].lazy += tree[node].lazy;
+        }
+        tree[node].lazy = 0;
+    }
+    if (s > e || s > r || e < l)
+        return;
+    if (s >= l && e <= r)
+    {
+        tree[node].val += x;
+        if (s != e)
+        {
+            tree[2 * node].lazy += x;
+            tree[2 * node + 1].lazy += x;
+        }
+        return;
+    }
+    li m = (s + e) >> 1;
+    update(2 * node, s, m, l, r, x);
+    update(2 * node + 1, m + 1, e, l, r, x);
+    tree[node].val = tree[2 * node].val + tree[2 * node + 1].val;
+}
+li query(li node, li s, li e, li inx)
+{
+    if (tree[node].lazy)
+    {
+        tree[node].val += tree[node].lazy;
+        if (s != e)
+        {
+            tree[2 * node].lazy += tree[node].lazy;
+            tree[2 * node + 1].lazy += tree[node].lazy;
+        }
+        tree[node].lazy = 0;
+    }
+    if (s > inx || e < inx)
+        return 0;
+    if (s == e)
+        return tree[node].val;
+    li m = (s + e) >> 1;
+    li q1 = query(2 * node, s, m, inx);
+    li q2 = query(2 * node + 1, m + 1, e, inx);
+    return q1 + q2;
+}
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int t = 1;
+    // cin >> t;
+    while (t--)
+    {
+        li n, q, x, l, r, v;
+        cin >> n >> q;
+        while (q--)
+        {
+            cin >> x;
+            if (x == 1)
+            {
+                cin >> l >> r >> v;
+                update(1, 1, n, l + 1, r, v);
+            }
+            else
+            {
+                cin >> v;
+                cout << query(1, 1, n, v + 1) << "\n";
+            }
+        }
+    }
+}
