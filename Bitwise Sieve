@@ -1,0 +1,25 @@
+bool prime(li a[], li n)
+{
+    // checking whether the value of element
+    // is set or not. Using prime[x/64], we find
+    // the slot in prime array. To find the bit
+    // number, we divide x by 2 and take its mod
+    // with 32.
+    return !(a[n / 64] & (1 << ((n >> 1) & 31)));
+}
+void sieve(li n)
+{
+    li i, j, a[n / 64 + 1];
+    //2 is the only even prime so we're not considering it
+    for (i = 3; i <= n; i += 2)
+    {
+        if (prime(a, i))
+        {
+            // cout << i << " ";
+            for (j = i * i; j <= n; j += 2 * i)
+            {
+                a[j / 64] |= (1 << ((j >> 1) & 31));
+            }
+        }
+    }
+}
