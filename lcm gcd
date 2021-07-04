@@ -1,0 +1,11 @@
+li gcd(li a, li b)
+{
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+
+li lcm(li a, li b)
+{
+    return (a / gcd(a, b)) * b;
+}
