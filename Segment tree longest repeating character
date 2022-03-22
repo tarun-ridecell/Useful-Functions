@@ -1,0 +1,115 @@
+Find Ques here : https://leetcode.com/problems/longest-substring-of-one-repeating-character/
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long li;
+#define pb push_back
+#define vi vector<li>
+#define prqueue priority_queue<li, vector<li>, greater<li>>
+#define f first
+#define s second
+#define ln cout << "\n";
+#define no cout << "NO\n"
+#define yes cout << "YES\n"
+#define mid(l, r) l + (r - l) / 2
+#define all(v) v.begin(), v.end()
+#define allr(v) v.rbegin(), v.rend()
+#define MAXN 100005
+#define CLOCK cerr << "\nTime elapsed: " << 1000 * clock() / CLOCKS_PER_SEC << "ms\n";
+// memset(arr, 0, sizeof arr);
+const li mod = 1000000007;
+struct
+{
+    char pref;
+    char suff;
+    int pref_len;
+    int suff_len;
+    int len;
+    int max_len;
+} tree[4 * MAXN];
+string s;
+void build(int node, int l, int r)
+{
+    if (l == r)
+    {
+        // cout << l << " " << node << endl;
+        tree[node].pref = s[l];
+        tree[node].suff = s[l];
+        tree[node].pref_len = 1;
+        tree[node].suff_len = 1;
+        tree[node].len = 1;
+        tree[node].max_len = 1;
+    }
+    else
+    {
+        int mid = mid(l, r);
+        build(node * 2, l, mid);
+        build(node * 2 + 1, mid + 1, r);
+        tree[node].pref = tree[node * 2].pref;
+        tree[node].suff = tree[node * 2 + 1].suff;
+        int x = tree[2 * node].pref_len;
+        if (x == tree[2 * node].len && tree[2 * node + 1].pref == tree[2 * node].pref)
+            x += tree[2 * node + 1].pref_len;
+        tree[node].pref_len = x;
+        x = tree[2 * node + 1].suff_len;
+        if (x == tree[2 * node + 1].len && tree[2 * node].suff == tree[2 * node + 1].pref)
+            x += tree[2 * node].suff_len;
+        tree[node].suff_len = x;
+        tree[node].len = tree[2 * node + 1].len + tree[2 * node].len;
+        tree[node].max_len = max({tree[2 * node + 1].max_len, tree[2 * node].max_len});
+        tree[node].max_len = max({tree[node].max_len, tree[node].pref_len, tree[node].suff_len});
+        if (tree[2 * node].suff == tree[2 * node + 1].pref)
+            tree[node].max_len = max(tree[node].max_len, tree[2 * node].suff_len + tree[2 * node + 1].pref_len);
+        // cout << l << " " << r << " " << tree[node].max_len << "\n";
+    }
+}
+void update(int node, int l, int r, int idx, char ch)
+{
+    if (l > idx || r < idx)
+        return;
+    if (l == r)
+    {
+        tree[node].pref = ch;
+        tree[node].suff = ch;
+    }
+    else
+    {
+        int mid = mid(l, r);
+        if (idx <= mid)
+            update(node * 2, l, mid, idx, ch);
+        else
+            update(node * 2 + 1, mid + 1, r, idx, ch);
+        tree[node].pref = tree[node * 2].pref;
+        tree[node].suff = tree[node * 2 + 1].suff;
+        int x = tree[2 * node].pref_len;
+        if (x == tree[2 * node].len && tree[2 * node + 1].pref == tree[2 * node].pref)
+            x += tree[2 * node + 1].pref_len;
+        tree[node].pref_len = x;
+        x = tree[2 * node + 1].suff_len;
+        if (x == tree[2 * node + 1].len && tree[2 * node].suff == tree[2 * node + 1].pref)
+            x += tree[2 * node].suff_len;
+        tree[node].suff_len = x;
+        tree[node].len = tree[2 * node + 1].len + tree[2 * node].len;
+        tree[node].max_len = max({tree[node].max_len, tree[2 * node + 1].max_len, tree[2 * node].max_len});
+        tree[node].max_len = max({tree[node].max_len, tree[node].pref_len, tree[node].suff_len});
+        if (tree[2 * node].suff == tree[2 * node + 1].pref)
+            tree[node].max_len = max(tree[node].max_len, tree[2 * node].suff_len + tree[2 * node + 1].pref_len);
+    }
+}
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    cin >> s;
+    build(1, 0, s.length() - 1);
+    cout << tree[1].max_len << " ";
+    string p;
+    cin >> p;
+    int x;
+    for (int i = 0; i < p.length(); i++)
+    {
+        cin >> x;
+        update(1, 0, s.length() - 1, x, p[i]);
+        cout << tree[1].max_len << " ";
+    }
+}
