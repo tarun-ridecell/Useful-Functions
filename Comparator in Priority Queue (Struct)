@@ -1,0 +1,16 @@
+struct PQ
+{
+    int ff;
+    int prod;
+};
+struct comp
+{
+    bool operator()(PQ &p1, PQ &p2)
+    {
+        // return "true" if "p1" is ordered
+        // before "p2", for example:
+        if (p1.ff != p2.ff)
+            return p1.ff > p2.ff;
+        return p1.prod < p2.prod;
+    }
+};
