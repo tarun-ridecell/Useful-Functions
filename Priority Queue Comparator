@@ -1,0 +1,5 @@
+        auto comp = [&](const pair<string,int>& a, const pair<string,int>& b) {
+            return a.second > b.second || (a.second == b.second && a.first < b.first);
+        };
+        typedef priority_queue< pair<string,int>, vector<pair<string,int>>, decltype(comp) > my_priority_queue_t;
+        my_priority_queue_t  pq(comp);
