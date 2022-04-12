@@ -1,0 +1,12 @@
+// strong hash function (power of 26)
+
+long long hash_val[n], p = 1, mod = 1e9 + 7, pw[n];
+        for(i = 0 ; i < n ; i++)
+        {
+            long long x = s[i] - 'a' + 1;                       
+            hash_val[i] = (x * p) % mod;
+            pw[i] = p;
+            p = (p * 26) % mod;
+            if(i)
+                hash_val[i] = (hash_val[i] + hash_val[i - 1]) % mod;
+        }
